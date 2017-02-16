@@ -6,6 +6,120 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
+    const handleResponse = (xhr, type) => {
+      const content = document.querySelector("#content");
+      
+	  if(type == 'application/json'){		  
+		  switch(xhr.status) {
+			case 200: //success
+			  content.innerHTML = `<b>Success</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			case 401: 
+			  content.innerHTML = `<b>Unauthorized Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			case 403: 
+			  content.innerHTML = `<b>Forbidden Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			case 400: //bad request 
+			  content.innerHTML = `<b>Bad Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			case 404: //not found (requested resource does not exist)
+			  content.innerHTML = `<b>Resource Not Found</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			case 500: 
+			  content.innerHTML = `<b>Internal Error</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+			  break;
+			default: //default other errors we are not handling in this example
+			  content.innerHTML = `<b>Not Implemented</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += JSON.parse(xhr.responseText)["message"];
+		  }
+	  }
+	  if(type == 'text/xml'){		  
+		  switch(xhr.status) {
+			case 200: //success
+			  content.innerHTML = `<b>Success</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			case 401: 
+			  content.innerHTML = `<b>Unauthorized Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			case 403: 
+			  content.innerHTML = `<b>Forbidden Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			case 400: //bad request 
+			  content.innerHTML = `<b>Bad Request</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			case 404: //not found (requested resource does not exist)
+			  content.innerHTML = `<b>Resource Not Found</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			case 500: 
+			  content.innerHTML = `<b>Internal Error</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+			  break;
+			default: //default other errors we are not handling in this example
+			  content.innerHTML = `<b>Not Implemented</b><br>`;
+			  content.innerHTML += "Message: ";
+			  content.innerHTML += xhr.responseXML.querySelector('message').textContent;
+		  }
+	  }
+    };
+    
+    const sendAjax = (url, acceptedType) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.setRequestHeader ("Accept", acceptedType);
+
+      xhr.onload = () => handleResponse(xhr, acceptedType);
+
+      xhr.send();
+    };
+	
+	const init = () => {
+	  const selector = document.querySelector("#page");
+	  const typeSelector = document.querySelector("#type");
+	  const typeName = typeSelector.options[typeSelector.selectedIndex].value;
+	  selector.onchange = getButton;
+	  typeSelector.onchange = getButton;
+	  getButton();
+	}
+	
+	const getButton = () => {
+	  var send = document.querySelector("#send");
+      const sendClone = send.cloneNode(true);
+      send.parentNode.replaceChild(sendClone, send);
+	  const sendButton = document.querySelector("#send");
+	  const selector = document.querySelector("#page");
+	  const pathName = selector.options[selector.selectedIndex].value;
+	  const typeSelector = document.querySelector("#type");
+	  const typeName = typeSelector.options[typeSelector.selectedIndex].value;
+      const callMethod = () => sendAjax(pathName, typeName);
+      sendButton.addEventListener('click', callMethod);
+	}
+
+    window.onload = init;
 
   </script>
 </head>
