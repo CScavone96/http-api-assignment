@@ -1,8 +1,8 @@
 const http = require('http');
 const url = require('url');
-const query = require('querystring'); 
-const { getIndex, getStyle} = require('./htmlResponses.js');
-const { notFound, success, badRequest, forbidden, unauthorized, internal, notImplemented} = require('./jsonResponses.js');
+const query = require('querystring');
+const { getIndex, getStyle } = require('./htmlResponses.js');
+const { notFound, success, badRequest, forbidden, unauthorized, internal, notImplemented } = require('./jsonResponses.js');
 
 const PORT = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -15,7 +15,7 @@ const urlStruct = {
   '/unauthorized': unauthorized,
   '/internal': internal,
   '/notImplemented': notImplemented,
-  notFound: notFound,
+  notFound,
 };
 
 const onRequest = (request, response) => {
